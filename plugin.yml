@@ -1,0 +1,14 @@
+name: OasisSky
+main: oasis.oasissky.OasisSky
+version: 1.0
+description: Oasis SkyBlock plugin
+author: Paxination
+load: STARTUP
+depend: [WorldEdit, WorldGuard, Multiverse-Core]
+commands:
+
+  test:
+    description: Test command to paste schematics
+    usage: "Usage: /<command>"
+    permission: oasissky.test
+    permission-message: You don't have permissions for <permission>
