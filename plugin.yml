@@ -3,7 +3,6 @@ main: oasis.oasissky.OasisSky
 version: 1.0
 description: Oasis SkyBlock plugin
 author: Paxination
-load: STARTUP
 depend: [WorldEdit, WorldGuard, Multiverse-Core]
 commands:
 

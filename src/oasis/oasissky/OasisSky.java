@@ -34,6 +34,7 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 
 public class OasisSky extends JavaPlugin implements CommandExecutor {
@@ -60,63 +61,31 @@ public class OasisSky extends JavaPlugin implements CommandExecutor {
 
 	}
 
-	public ChunkGenerator getDefaultWorldGenerator(String worldName, String id){
-		getLogger().info("[OasisSky] " + id);
-		return new SkyBlockWorld();
-	}
-
 	public void setUpSkyBlock(){
 		if(getServer().getWorld("SkyBlock")==null){
+			getMultiverseCore().getMVWorldManager().addWorld("SkyBlock", Environment.NORMAL, "34134525656", WorldType.NORMAL, false, "WorldGen:SkyBlockWorld");
+			Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock world created and imported into Multiverse!");
 			new BukkitRunnable(){
 
 				@Override
 				public void run() {
-					new WorldCreator("SkyBlock").environment(Environment.NORMAL).generator(new SkyBlockWorld()).type(WorldType.NORMAL).generateStructures(false).createWorld();
-					Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock world created!");
 					min = new Location(getServer().getWorld("SkyBlock"),75,0,75);
 					max = new Location(getServer().getWorld("SkyBlock"),-75,255,-75);
 
 					BlockVector pos1 = BukkitUtil.toVector(min.getBlock());
 					BlockVector pos2 = BukkitUtil.toVector(max.getBlock());
 					getWorldGuard().getRegionManager(getServer().getWorld("SkyBlock")).addRegion(new ProtectedCuboidRegion("SkyBlock", pos2, pos1));
+					getWorldGuard().getRegionManager(getServer().getWorld("SkyBlock")).addRegion(new GlobalProtectedRegion("__Global__"));
 					Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock spawn region created!");
-					getMultiverseCore().getMVWorldManager().addWorld("SkyBlock", Environment.NORMAL, "34134525656", WorldType.NORMAL, false, "OasisSky:SkyBlockWorld");
-					Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock imported into Multiverse!");
-					File file = new File("bukkit.yml");
-					FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(file);
-					fileConfig.set("worlds.SkyBlock.generator", "OasisSky:SkyBlockWorld");
-					try {
-						fileConfig.save(file);
-						Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock world generator set in bukkit.yml!");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-			}.runTaskLater(this, 400L);
-			
-			new BukkitRunnable(){
-
-				@Override
-				public void run() {
 					Location location = new Location(getServer().getWorld("SkyBlock"),0,63,0);
 					paste(location,"skyspawn");
 					Bukkit.getLogger().info(ChatColor.AQUA + "Spawn for SkyBlock pasted!");
 				}
 
-			}.runTaskLater(this, 600L);
+			}.runTaskLater(this, 400L);
 		} else {
-			new BukkitRunnable(){
-
-				@Override
-				public void run() {
-					new WorldCreator("SkyBlock").environment(Environment.NORMAL).generator(new SkyBlockWorld()).type(WorldType.NORMAL).generateStructures(false).createWorld();
-					min = new Location(getServer().getWorld("SkyBlock"),75,0,75);
-					max = new Location(getServer().getWorld("SkyBlock"),-75,255,-75);
-				}
-
-			}.runTaskLater(this, 600L);
+			min = new Location(getServer().getWorld("SkyBlock"),75,0,75);
+			max = new Location(getServer().getWorld("SkyBlock"),-75,255,-75);
 		}
 	}
 
