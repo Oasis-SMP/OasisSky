@@ -42,15 +42,22 @@ public class OasisSky extends JavaPlugin implements CommandExecutor {
 	ConsoleCommandSender console;
 	Location min;
 	Location max;
+	Location spawn;
+	IslandIndicesUtil util;
 
 	@Override
 	public void onEnable(){
-		this.
-
 		console = this.getServer().getConsoleSender();
-
-		getCommand("test");
-		//getCommand("skyblock").setExecutor(new SkyBlockCmd(this));;
+		this.saveDefaultConfig();
+		if(getConfig().getConfigurationSection("skyblock")==null){
+			getConfig().createSection("skyblock");
+			saveConfig();
+		}
+		util = new IslandIndicesUtil(getConfig().getConfigurationSection("skyblock"));
+		util.save(getConfig().getConfigurationSection("skyblock"));
+		saveConfig();
+		
+		getCommand("skyblock").setExecutor(new SkyBlockCmd(this));;
 
 		setUpSkyBlock();
 
@@ -75,10 +82,10 @@ public class OasisSky extends JavaPlugin implements CommandExecutor {
 					BlockVector pos1 = BukkitUtil.toVector(min.getBlock());
 					BlockVector pos2 = BukkitUtil.toVector(max.getBlock());
 					getWorldGuard().getRegionManager(getServer().getWorld("SkyBlock")).addRegion(new ProtectedCuboidRegion("SkyBlock", pos2, pos1));
-					getWorldGuard().getRegionManager(getServer().getWorld("SkyBlock")).addRegion(new GlobalProtectedRegion("__Global__"));
+					getWorldGuard().getRegionManager(getServer().getWorld("SkyBlock")).addRegion(new GlobalProtectedRegion("__global__"));
 					Bukkit.getLogger().info(ChatColor.AQUA + "SkyBlock spawn region created!");
-					Location location = new Location(getServer().getWorld("SkyBlock"),0,63,0);
-					paste(location,"skyspawn");
+					spawn = new Location(getServer().getWorld("SkyBlock"),0,63,0);
+					paste(spawn,"skyspawn");
 					Bukkit.getLogger().info(ChatColor.AQUA + "Spawn for SkyBlock pasted!");
 				}
 
@@ -86,18 +93,8 @@ public class OasisSky extends JavaPlugin implements CommandExecutor {
 		} else {
 			min = new Location(getServer().getWorld("SkyBlock"),75,0,75);
 			max = new Location(getServer().getWorld("SkyBlock"),-75,255,-75);
+			spawn = new Location(getServer().getWorld("SkyBlock"),0,63,0);
 		}
-	}
-
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
-
-		if(cmd.getName().equalsIgnoreCase("test")){
-			paste(((Player)sender).getLocation(),"test");
-			return true;
-		}
-
-		return false;
 	}
 
 	public void paste(Location location,String name){

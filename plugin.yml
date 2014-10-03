@@ -6,8 +6,8 @@ author: Paxination
 depend: [WorldEdit, WorldGuard, Multiverse-Core]
 commands:
 
-  test:
-    description: Test command to paste schematics
+  skyblock:
+    description: Main Skyblock command
     usage: "Usage: /<command>"
-    permission: oasissky.test
+    permission: oasissky.user.skyblock
     permission-message: You don't have permissions for <permission>
